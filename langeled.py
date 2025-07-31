@@ -11,6 +11,11 @@ import sys
 
 #In order to use a package that is not already installed
 def ensure_package(package):
+    """
+    Installs package
+
+    For packages not already in the Open WebUI python environment
+    """
     try:
         importlib.import_module(package)
     except ImportError:
@@ -24,7 +29,32 @@ import argostranslate.translate
 
 
 class Filter:
+    """
+    A filter that translates the users prompt before it gets passed to the model, as well as translating it back afterwards
+
+    Attributes:
+    -----
+    valves: Valves object
+        Stores the users poken language as a two-character ISO 639-1 string
+
+        
+    Methods:
+    -----
+    inlet(self, body)
+        Function that translates the message from the user, before it gets passed to the model
+
+    outlet(self, body)
+        Translates back before presenting it to the user
+    """
+
+
     class Valves(BaseModel):  
+        """
+        Selects spoken language as a two-character ISO 639-1 string
+    
+        Can be found and modified under Admin panel -> Functions -> Valves
+        
+        """
         YOUR_LANGUAGE: str = Field(
             default = 'nb',
             description = "Språket du skriver på. Bruk 'nb' for norsk bokmål"
@@ -57,7 +87,19 @@ class Filter:
         argostranslate.package.update_package_index()
         self.available_packages = argostranslate.package.get_available_packages()
 
+
+
     def init_language(self):
+        """
+        Installs translation packages for the selected languages if available
+
+
+        Raises
+        -----
+        Exception:
+            If the package is not found
+
+        """
 
         argostranslate.package.update_package_index()
         self.available_packages = argostranslate.package.get_available_packages()
@@ -102,11 +144,23 @@ class Filter:
         return pairs
 
     def inlet(self, body: dict) -> dict:
+        """
+        Translates the input before returning it to the language model
+
+        Parameters:
+        -----
+        body: dict (from Json)
+            The full input from the user
+
+        Returns
+        -----
+        body: dict
+            Same as input except the Message is translated
+        """
 
         self.init_language()
 
         input = body['messages'][-1]['content']
-        
         
         self.logger.info('Translating input into intermediate language "' + self.intermediate_language + '".')
         start_translate = time.time()
@@ -123,7 +177,19 @@ class Filter:
 
 
     def outlet(self, body: dict) -> dict:
+        """
+        Translates the response for the user
 
+        Parameters:
+        -----
+        body: dict (from Json)
+            The full response from the model
+
+        Returns
+        -----
+        body: dict
+            Translated back
+        """
         self.logger.info('Translating from intermediate language "' + self.intermediate_language + '" to "' + self.valves.YOUR_LANGUAGE + '".')
         start_translate = time.time()
 
