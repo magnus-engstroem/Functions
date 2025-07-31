@@ -1,6 +1,12 @@
-# langeled
+## Some functions for Open Webui
 
-A Norwegian <-> English pipeline
+#### `translate_filter.py`
 
-Requires the argostranslate package, which is not installed by default in the Open WebUI container
+A filter which translates the user message before passing it to the model:
+1. Input
+2. Translate no -> en
+3. Model response
+4. Translate en -> no
+5. Output
 
+#### Model
