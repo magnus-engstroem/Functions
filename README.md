@@ -9,4 +9,4 @@ A filter which translates the user message before passing it to the model:
 4. Translate en -> no
 5. Output
 
-#### Model
+#### `summarization_pipe.py`
