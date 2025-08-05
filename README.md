@@ -10,3 +10,7 @@ A filter which translates the user message before passing it to the model:
 5. Output
 
 #### `summarization_pipe.py`
+
+A pipe which uses the `flan-t5` to summarize text
+
+(May require a restart of the pipelines container)
