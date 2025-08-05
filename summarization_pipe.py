@@ -4,10 +4,26 @@ from transformers import pipeline
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 from nltk.tokenize import sent_tokenize
 import nltk
+import importlib
+import subprocess
+import sys
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 
+def ensure_package(package):
+    """
+    Installs package
 
+    For packages not already in the Open WebUI python environment
+    """
+    try:
+        importlib.import_module(package)
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+
+ensure_package('sentencepiece')
+ensure_package('accelerate')
 
 
 class Pipeline:
@@ -59,10 +75,9 @@ class Pipeline:
 
         return "\n\n".join(summaries)
 
-    def pipe(self, body: dict) -> Union[str, Generator, Iterator]:
-        input = body['messages'][-1]['content']
+    def pipe(self, user_message: str, model_id: str, messages: List[dict], body: dict) -> Union[str, Generator, Iterator]:
 
-        return self.summarize_long_text(input)
+        return self.summarize_long_text(user_message)
 
 
 
