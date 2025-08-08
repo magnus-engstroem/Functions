@@ -60,13 +60,6 @@ class Filter:
             description = "Språket du skriver på. Bruk 'nb' for norsk bokmål"
         )
 
-
-    class UserValves(BaseModel):  
-        YOUR_LANGUAGE: str = Field(
-            default = 'nb',
-            description = "Språket du skriver på. Bruk 'nb' for norsk bokmål"
-        )
-
     def __init__(self):
         # Initialize valves (optional configuration for the Filter)
         self.valves = self.Valves() 
